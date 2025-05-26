@@ -1,0 +1,146 @@
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>꿈을 파는 아이스크림 가게</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #fff8f0;
+      padding: 30px;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #d87f5a;
+    }
+    .question {
+      margin: 20px 0;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #ffe0cc;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffd1b3;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 1.2em;
+      text-align: center;
+      background-color: #f9f2ec;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>꿈을 파는 아이스크림 가게</h1>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        question: "어떤 아이스크림 맛을 고르시겠어요?",
+        answers: [
+          { text: "초콜릿", type: "안정" },
+          { text: "딸기", type: "감성" },
+          { text: "레몬", type: "창의" },
+          { text: "바닐라", type: "균형" }
+        ]
+      },
+      {
+        question: "토핑을 하나 골라보세요.",
+        answers: [
+          { text: "무지개 스프링클", type: "상상력" },
+          { text: "캐러멜 크런치", type: "열정" },
+          { text: "민트잎", type: "신중함" },
+          { text: "쿠키 조각", type: "따뜻함" }
+        ]
+      },
+      {
+        question: "누구와 함께 먹고 싶으신가요?",
+        answers: [
+          { text: "혼자", type: "내향형" },
+          { text: "친구", type: "사회형" },
+          { text: "가족", type: "가족애" },
+          { text: "낯선 사람", type: "탐험형" }
+        ]
+      }
+    ];
+
+    let current = 0;
+    const resultCount = {};
+
+    function showQuestion() {
+      const q = quiz[current];
+      document.getElementById("question").innerText = q.question;
+      const choices = document.getElementById("choices");
+      choices.innerHTML = "";
+
+      q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer.text;
+        btn.onclick = () => {
+          resultCount[answer.type] = (resultCount[answer.type] || 0) + 1;
+          current++;
+          if (current < quiz.length) {
+            showQuestion();
+          } else {
+            showResult();
+          }
+        };
+        choices.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      const resultBox = document.getElementById("result");
+      document.getElementById("question").style.display = "none";
+      document.getElementById("choices").style.display = "none";
+
+      let topType = Object.entries(resultCount).sort((a, b) => b[1] - a[1])[0][0];
+
+      const descriptions = {
+        "안정": "당신은 신중하고 따뜻한 마음을 지닌 사람입니다.",
+        "감성": "감정을 잘 느끼고 표현하는 감성 리더입니다.",
+        "창의": "상상력이 풍부하고 독특한 생각을 즐기는 창조형입니다.",
+        "균형": "균형 잡힌 사고로 주변을 편안하게 하는 조율자입니다.",
+        "상상력": "끝없는 상상으로 세상을 아름답게 만드는 사람입니다.",
+        "열정": "뜨거운 열정을 가진 도전가입니다.",
+        "신중함": "조용하지만 깊은 통찰을 가진 분석가입니다.",
+        "따뜻함": "누군가의 마음을 어루만지는 힐러형입니다.",
+        "내향형": "혼자만의 시간을 통해 더 깊은 나를 만납니다.",
+        "사회형": "사람들과 어울리며 행복을 나누는 커뮤니케이터입니다.",
+        "가족애": "가족과의 연결을 가장 소중하게 여기는 사람입니다.",
+        "탐험형": "새로운 것을 찾아 떠나는 자유로운 영혼입니다."
+      };
+
+      resultBox.innerHTML = `<strong>당신의 성향은:</strong><br><br>${descriptions[topType]}`;
+      resultBox.style.display = "block";
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
+
