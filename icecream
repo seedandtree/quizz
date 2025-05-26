@@ -1,0 +1,207 @@
+# Create a version with placeholders for cute animal graphics
+
+graphic_html_path = "/mnt/data/icecream-quiz-graphic.html"
+graphic_html_content = """<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>꿈을 파는 아이스크림 가게</title>
+  <style>
+    body {
+      font-family: 'Arial Rounded MT Bold', 'Noto Sans KR', sans-serif;
+      background: linear-gradient(145deg, #fff4ec, #ffe4d4);
+      padding: 30px;
+      color: #4e342e;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff8f0;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #d87f5a;
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+    }
+    .question {
+      margin: 20px 0;
+      font-size: 1.3rem;
+    }
+    button {
+      margin: 10px;
+      padding: 16px 30px;
+      background-color: #ffd1b3;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background-color: #ffbb99;
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 1.3rem;
+      background-color: #fff0e6;
+      padding: 20px;
+      border-radius: 20px;
+      display: none;
+      color: #5d4037;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+    .animal-img {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      margin: 15px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍦 꿈을 파는 아이스크림 가게</h1>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        question: "어떤 아이스크림 맛을 고르시겠어요?",
+        answers: [
+          { text: "🍫 초콜릿", type: "안정" },
+          { text: "🍓 딸기", type: "감성" },
+          { text: "🍋 레몬", type: "창의" },
+          { text: "🍦 바닐라", type: "균형" }
+        ]
+      },
+      {
+        question: "토핑을 하나 골라보세요.",
+        answers: [
+          { text: "🌈 무지개 스프링클", type: "상상력" },
+          { text: "🍯 캐러멜 크런치", type: "열정" },
+          { text: "🌿 민트잎", type: "신중함" },
+          { text: "🍪 쿠키 조각", type: "따뜻함" }
+        ]
+      },
+      {
+        question: "누구와 함께 먹고 싶으신가요?",
+        answers: [
+          { text: "🧘 혼자", type: "내향형" },
+          { text: "👯 친구", type: "사회형" },
+          { text: "👨‍👩‍👧‍👦 가족", type: "가족애" },
+          { text: "🗺️ 낯선 사람", type: "탐험형" }
+        ]
+      }
+    ];
+
+    let current = 0;
+    const resultCount = {};
+
+    function showQuestion() {
+      const q = quiz[current];
+      document.getElementById("question").innerText = q.question;
+      const choices = document.getElementById("choices");
+      choices.innerHTML = "";
+
+      q.answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer.text;
+        btn.onclick = () => {
+          resultCount[answer.type] = (resultCount[answer.type] || 0) + 1;
+          current++;
+          if (current < quiz.length) {
+            showQuestion();
+          } else {
+            showResult();
+          }
+        };
+        choices.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      const resultBox = document.getElementById("result");
+      document.getElementById("question").style.display = "none";
+      document.getElementById("choices").style.display = "none";
+
+      let topType = Object.entries(resultCount).sort((a, b) => b[1] - a[1])[0][0];
+
+      const descriptions = {
+        "안정": {
+          desc: "🍫 당신은 신중하고 따뜻한 마음을 지닌 사람입니다.",
+          img: "https://cdn.pixabay.com/photo/2021/02/18/09/21/bear-6025195_1280.png"
+        },
+        "감성": {
+          desc: "🍓 감정을 잘 느끼고 표현하는 감성 리더입니다.",
+          img: "https://cdn.pixabay.com/photo/2023/01/17/16/48/cat-7724199_1280.png"
+        },
+        "창의": {
+          desc: "🍋 상상력이 풍부하고 독특한 생각을 즐기는 창조형입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/07/01/17/43/fox-7295421_1280.png"
+        },
+        "균형": {
+          desc: "🍦 균형 잡힌 사고로 주변을 편안하게 하는 조율자입니다.",
+          img: "https://cdn.pixabay.com/photo/2023/01/18/10/13/rabbit-7725487_1280.png"
+        },
+        "상상력": {
+          desc: "🌈 끝없는 상상으로 세상을 아름답게 만드는 사람입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/07/06/18/28/deer-7305584_1280.png"
+        },
+        "열정": {
+          desc: "🔥 뜨거운 열정을 가진 도전가입니다.",
+          img: "https://cdn.pixabay.com/photo/2023/02/14/21/13/lion-7790707_1280.png"
+        },
+        "신중함": {
+          desc: "🌿 조용하지만 깊은 통찰을 가진 분석가입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/06/29/11/56/owl-7290272_1280.png"
+        },
+        "따뜻함": {
+          desc: "🍪 누군가의 마음을 어루만지는 힐러형입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/06/08/13/36/bunny-7250609_1280.png"
+        },
+        "내향형": {
+          desc: "🧘 혼자만의 시간을 통해 더 깊은 나를 만납니다.",
+          img: "https://cdn.pixabay.com/photo/2022/08/10/17/52/fox-7377411_1280.png"
+        },
+        "사회형": {
+          desc: "👯 사람들과 어울리며 행복을 나누는 커뮤니케이터입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/06/28/18/39/bear-7289222_1280.png"
+        },
+        "가족애": {
+          desc: "👨‍👩‍👧‍👦 가족과의 연결을 가장 소중하게 여기는 사람입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/06/28/18/43/dog-7289233_1280.png"
+        },
+        "탐험형": {
+          desc: "🗺️ 새로운 것을 찾아 떠나는 자유로운 영혼입니다.",
+          img: "https://cdn.pixabay.com/photo/2022/09/12/21/18/fox-7450681_1280.png"
+        }
+      };
+
+      const result = descriptions[topType];
+
+      resultBox.innerHTML = `
+        <img src="${result.img}" alt="${topType}" class="animal-img" />
+        <strong>당신의 성향은:</strong><br><br>${result.desc}`;
+      resultBox.style.display = "block";
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
+"""
+
+# Save final version with animal graphics
+with open(graphic_html_path, "w") as f:
+    f.write(graphic_html_content)
+
+graphic_html_path
